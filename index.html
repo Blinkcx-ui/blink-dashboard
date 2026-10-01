@@ -23,10 +23,19 @@
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="fixed inset-0 bg-charcoal z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-            <div class="mb-4 flex justify-center">
-                <img src="https://i.imgur.com/example-logo.png" alt="Blink Logo" class="h-14 object-contain" onerror="this.onerror=null; this.src='https://i.imgur.com/example-logo.png';">
+            <div class="mb-4 flex flex-col items-center justify-center">
+                <div class="flex items-center gap-2 mb-1">
+                    <svg class="h-10 w-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="10,10 50,10 30,45" fill="#6B7280"/>
+                        <polygon points="10,50 50,50 30,15" fill="#9CA3AF"/>
+                        <polygon points="10,55 50,55 30,90" fill="#4B5563"/>
+                        <polygon points="15,65 35,65 25,85" fill="#F26522"/>
+                    </svg>
+                    <span class="text-4xl font-extrabold tracking-tight text-[#F26522]">blink</span>
+                </div>
+                <div class="text-xs font-bold text-[#F26522] tracking-widest">BLINKS TO LINK • بلمح البصر</div>
             </div>
-            <p class="text-gray-500 mb-6 text-sm" data-i18n="login_subtitle">تسجيل الدخول للنظام (System Login)</p>
+            <p class="text-gray-500 mb-6 text-sm" data-i18n="login_subtitle">منصة تحليل الاستبيانات وإدارة الفروع</p>
             
             <form onsubmit="handleRealLogin(event)" class="space-y-4 text-right">
                 <div>
@@ -39,7 +48,7 @@
                 </div>
                 <div id="login-error" class="text-red-500 text-sm hidden font-bold"></div>
                 <button type="submit" id="login-btn" class="w-full bg-blink-orange text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity mt-4" data-i18n="login_btn">
-                    دخول
+                    تسجيل الدخول
                 </button>
             </form>
         </div>
@@ -48,11 +57,18 @@
     <!-- APP HEADER -->
     <header class="bg-white shadow-sm p-4 flex justify-between items-center no-print sticky top-0 z-40 hidden" id="app-header">
         <div class="flex items-center gap-6">
-            <div class="flex items-center">
-                <img src="https://i.imgur.com/example-logo.png" alt="Blink Logo" class="h-10 object-contain" onerror="this.onerror=null; this.src='https://i.imgur.com/example-logo.png';">
+            <div class="flex items-center gap-2">
+                <svg class="h-8 w-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="10,10 50,10 30,45" fill="#6B7280"/>
+                    <polygon points="10,50 50,50 30,15" fill="#9CA3AF"/>
+                    <polygon points="10,55 50,55 30,90" fill="#4B5563"/>
+                    <polygon points="15,65 35,65 25,85" fill="#F26522"/>
+                </svg>
+                <span class="text-2xl font-extrabold text-[#F26522]">blink</span>
             </div>
             <nav class="hidden md:flex gap-2 border-r pr-6" id="main-nav">
-                <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700 hidden" data-i18n="nav_home">الرئيسية</button>
+                <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700 hidden" data-i18n="nav_master">لوحة القياس الحية</button>
+                <button onclick="switchView('report')" id="nav-report" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden" data-i18n="nav_report">التقرير التنفيذي الشهري</button>
                 <button onclick="switchView('settings')" id="nav-settings" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden" data-i18n="nav_settings">إعدادات النظام</button>
             </nav>
         </div>
@@ -76,11 +92,11 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto p-6 hidden" id="main-content">
         
-        <!-- VIEW 1: MASTER DASHBOARD -->
+        <!-- VIEW 1: MASTER DASHBOARD (Executive View) -->
         <div id="view-master" class="hidden">
             <div class="bg-charcoal text-white rounded-xl p-8 mb-6 text-center">
                 <h1 class="text-3xl font-bold mb-2" data-i18n="dash_title">لوحة القياس الحية: نظرة الإدارة</h1>
-                <p class="text-gray-300" data-i18n="dash_subtitle">نظرة الإدارة • تحديث مباشر لجميع الفروع</p>
+                <p class="text-gray-300" data-i18n="dash_subtitle">نموذج لما تراه إدارة العمليات كل صباح • تحديث مباشر لجميع الفروع</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -100,7 +116,7 @@
 
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h3 class="font-bold text-lg" data-i18n="heatmap_heading">خريطة أداء الفروع الحية</h3>
+                    <h3 class="font-bold text-lg" data-i18n="heatmap_heading">خريطة الفروع: كل مربع يمثل فرعاً (انقر لعرض البطاقة)</h3>
                 </div>
                 <div class="grid grid-cols-8 md:grid-cols-10 gap-2" id="heatmap-container">
                     <div class="col-span-10 text-center py-10 font-bold text-gray-500" data-i18n="no_data_msg">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>
@@ -108,13 +124,16 @@
             </div>
         </div>
 
-        <!-- VIEW 2: BRANCH PERFORMANCE CARD -->
+        <!-- VIEW 2: BRANCH PERFORMANCE CARD (Branch Supervisor View) -->
         <div id="view-branch" class="hidden">
             <button onclick="switchView('master')" id="btn-back-master" class="mb-4 text-blink-orange font-bold flex items-center gap-2 no-print">
                 <span>◀</span> <span data-i18n="back_map">العودة للخريطة</span>
             </button>
             
-            <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="branch_card_title">بطاقة أداء الفرع</h1>
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold text-charcoal" data-i18n="branch_card_title">بطاقة أداء الفرع</h1>
+                <p class="text-gray-500 text-sm" data-i18n="branch_card_desc">نموذج لما يستلمه مشرف كل فرع شهريًا</p>
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-8 rounded-xl shadow-sm text-center border-t-4 border-blink-orange flex flex-col justify-center">
@@ -157,7 +176,18 @@
             </div>
         </div>
 
-        <!-- VIEW 3: SETTINGS -->
+        <!-- VIEW 3: EXECUTIVE REPORT -->
+        <div id="view-report" class="hidden">
+            <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="report_title">التقرير التنفيذي الشهري</h1>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">51</div><div class="text-gray-600" data-i18n="lowest_branch">أدنى فرع</div></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">94</div><div class="text-gray-600" data-i18n="highest_branch">أعلى فرع</div></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">88</div><div class="text-gray-600" data-i18n="above_avg">فرع فوق المتوسط</div></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">77</div><div class="text-gray-600" data-i18n="city_avg">متوسط الرياض</div></div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: SETTINGS -->
         <div id="view-settings" class="hidden">
             <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="settings_title">إعدادات النظام والربط</h1>
             
@@ -176,7 +206,7 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="role_label">الصلاحية (Role)</label>
                             <select id="new-role" class="w-full p-2 border rounded bg-gray-50">
-                                <option value="admin" data-i18n="role_admin">مدير نظام (Admin)</option>
+                                <option value="admin" data-i18n="role_admin">إدارة العمليات (Executive)</option>
                                 <option value="branch" data-i18n="role_branch">مشرف فرع (Branch Supervisor)</option>
                             </select>
                         </div>
@@ -210,22 +240,24 @@
         let currentLang = 'ar';
         const translations = {
             ar: {
-                login_subtitle: "تسجيل الدخول للنظام (System Login)",
+                login_subtitle: "منصة تحليل الاستبيانات وإدارة الفروع",
                 username: "اسم المستخدم",
                 password: "كلمة المرور",
-                login_btn: "دخول",
-                nav_home: "الرئيسية",
+                login_btn: "تسجيل الدخول",
+                nav_master: "لوحة القياس الحية",
+                nav_report: "التقرير التنفيذي الشهري",
                 nav_settings: "إعدادات النظام",
                 logout: "خروج",
                 dash_title: "لوحة القياس الحية: نظرة الإدارة",
-                dash_subtitle: "نظرة الإدارة • تحديث مباشر لجميع الفروع",
+                dash_subtitle: "نموذج لما تراه إدارة العمليات كل صباح • تحديث مباشر لجميع الفروع",
                 kpi_total: "إجمالي التقييمات",
                 kpi_avg: "متوسط أداء الفروع",
                 kpi_active: "الفروع النشطة",
-                heatmap_heading: "خريطة أداء الفروع الحية",
+                heatmap_heading: "خريطة الفروع: كل مربع يمثل فرعاً (انقر لعرض البطاقة)",
                 no_data_msg: "لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.",
                 back_map: "العودة للخريطة",
                 branch_card_title: "بطاقة أداء الفرع",
+                branch_card_desc: "نموذج لما يستلمه مشرف كل فرع شهريًا",
                 total_surveys_label: "إجمالي الاستبيانات",
                 waiting_data: "بانتظار البيانات",
                 score_scale: "النتيجة من 100",
@@ -233,10 +265,15 @@
                 axis_speed: "سرعة الخدمة",
                 axis_accuracy: "دقة الطلب",
                 axis_quality: "جودة المنتج",
+                report_title: "التقرير التنفيذي الشهري",
+                lowest_branch: "أدنى فرع",
+                highest_branch: "أعلى فرع",
+                above_avg: "فرع فوق المتوسط",
+                city_avg: "متوسط الرياض",
                 settings_title: "إعدادات النظام والربط",
                 create_user_heading: "إنشاء مستخدم جديد",
                 role_label: "الصلاحية (Role)",
-                role_admin: "مدير نظام (Admin)",
+                role_admin: "إدارة العمليات (Executive)",
                 role_branch: "مشرف فرع (Branch Supervisor)",
                 branch_id_label: "رقم الفرع (مطلوب لمشرف الفرع فقط)",
                 save_user_btn: "حفظ المستخدم",
@@ -246,22 +283,24 @@
                 copy_btn: "نسخ"
             },
             en: {
-                login_subtitle: "System Login",
+                login_subtitle: "Survey Analytics & Branch Management Platform",
                 username: "Username",
                 password: "Password",
                 login_btn: "Login",
-                nav_home: "Home",
-                nav_settings: "Settings",
+                nav_master: "Live Dashboard",
+                nav_report: "Executive Report",
+                nav_settings: "System Settings",
                 logout: "Logout",
                 dash_title: "Live Dashboard: Executive View",
-                dash_subtitle: "Executive Overview • Real-time Branch Updates",
+                dash_subtitle: "Operations Management View • Real-time Branch Updates",
                 kpi_total: "Total Surveys",
                 kpi_avg: "Average Performance",
                 kpi_active: "Active Branches",
-                heatmap_heading: "Live Branch Heatmap",
+                heatmap_heading: "Branch Heatmap: Click any branch to view card",
                 no_data_msg: "No branch data available yet. Link your survey to start seeing branches here.",
                 back_map: "Back to Map",
                 branch_card_title: "Branch Performance Card",
+                branch_card_desc: "Monthly performance overview for branch supervisors",
                 total_surveys_label: "Total Surveys",
                 waiting_data: "Waiting for Data",
                 score_scale: "Score out of 100",
@@ -269,10 +308,15 @@
                 axis_speed: "Service Speed",
                 axis_accuracy: "Order Accuracy",
                 axis_quality: "Product Quality",
+                report_title: "Monthly Executive Report",
+                lowest_branch: "Lowest Branch",
+                highest_branch: "Highest Branch",
+                above_avg: "Branches Above Avg",
+                city_avg: "City Average",
                 settings_title: "System Settings & Integration",
                 create_user_heading: "Create New User",
                 role_label: "Role",
-                role_admin: "Admin",
+                role_admin: "Operations Management (Executive)",
                 role_branch: "Branch Supervisor",
                 branch_id_label: "Branch ID (Required for Branch users)",
                 save_user_btn: "Save User",
@@ -318,7 +362,7 @@
                 if (data.success) {
                     session = data.user;
                     document.getElementById('current-user-name').innerText = session.username;
-                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? (currentLang === 'ar' ? 'مدير النظام (Admin)' : 'Admin') : (currentLang === 'ar' ? 'مشرف فرع (Branch)' : 'Branch Supervisor');
+                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? (currentLang === 'ar' ? 'إدارة العمليات (Executive)' : 'Executive') : (currentLang === 'ar' ? 'مشرف فرع (Branch)' : 'Branch Supervisor');
                     
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('app-header').classList.remove('hidden');
@@ -327,12 +371,14 @@
                     if (session.role === 'admin') {
                         document.getElementById('nav-settings').classList.remove('hidden');
                         document.getElementById('nav-master').classList.remove('hidden');
+                        document.getElementById('nav-report').classList.remove('hidden');
                         document.getElementById('btn-back-master').classList.remove('hidden');
                         switchView('master');
                         loadRealData();
                     } else {
                         document.getElementById('nav-settings').classList.add('hidden');
                         document.getElementById('nav-master').classList.add('hidden');
+                        document.getElementById('nav-report').classList.add('hidden');
                         document.getElementById('btn-back-master').classList.add('hidden');
                         switchView('branch');
                         loadRealData(session.branch_id);
@@ -343,9 +389,9 @@
                 }
             } catch (error) {
                 err.innerText = 'Server connection error';
-                err.classList.remove('hidden');
+                err.classList.add('hidden');
             }
-            btn.innerText = currentLang === 'ar' ? 'دخول' : 'Login';
+            btn.innerText = currentLang === 'ar' ? 'تسجيل الدخول' : 'Login';
         }
 
         async function handleCreateUser(e) {
@@ -442,7 +488,7 @@
         }
 
         function switchView(viewName) {
-            ['master', 'branch', 'settings'].forEach(v => {
+            ['master', 'branch', 'report', 'settings'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if(el) el.style.display = 'none';
                 const nav = document.getElementById(`nav-${v}`);
