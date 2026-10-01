@@ -37,12 +37,12 @@
             </div>
             <p class="text-gray-500 mb-6 text-sm" data-i18n="login_subtitle">منصة تحليل الاستبيانات وإدارة الفروع</p>
             
-            <form onsubmit="handleRealLogin(event)" class="space-y-4 text-right">
-                <div>
+            <form onsubmit="handleRealLogin(event)" class="space-y-4" id="login-form-align">
+                <div class="text-start">
                     <label class="block text-sm font-bold mb-1" data-i18n="username">اسم المستخدم</label>
                     <input type="text" id="login-username" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blink-orange outline-none">
                 </div>
-                <div>
+                <div class="text-start">
                     <label class="block text-sm font-bold mb-1" data-i18n="password">كلمة المرور</label>
                     <input type="password" id="login-password" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blink-orange outline-none">
                 </div>
@@ -66,8 +66,9 @@
                 </svg>
                 <span class="text-2xl font-extrabold text-[#F26522]">blink</span>
             </div>
-            <nav class="hidden md:flex gap-2 border-r pr-6" id="main-nav">
+            <nav class="hidden md:flex gap-2 border-x px-4" id="main-nav">
                 <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700 hidden" data-i18n="nav_master">لوحة القياس الحية</button>
+                <button onclick="switchView('all-cards')" id="nav-all-cards" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden" data-i18n="nav_all_cards">بطاقات الفروع</button>
                 <button onclick="switchView('report')" id="nav-report" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden" data-i18n="nav_report">التقرير التنفيذي الشهري</button>
                 <button onclick="switchView('settings')" id="nav-settings" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden" data-i18n="nav_settings">إعدادات النظام</button>
             </nav>
@@ -79,7 +80,7 @@
             <button onclick="window.print()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-bold flex items-center gap-2 text-sm">
                 📄 PDF
             </button>
-            <div class="text-left border-l pl-4">
+            <div class="px-4 border-x text-start">
                 <div class="font-bold text-gray-900" id="current-user-name">--</div>
                 <div class="text-xs text-gray-500" id="current-user-role">--</div>
             </div>
@@ -92,11 +93,11 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto p-6 hidden" id="main-content">
         
-        <!-- VIEW 1: MASTER DASHBOARD (Executive View) -->
+        <!-- VIEW 1: MASTER DASHBOARD -->
         <div id="view-master" class="hidden">
             <div class="bg-charcoal text-white rounded-xl p-8 mb-6 text-center">
-                <h1 class="text-3xl font-bold mb-2" data-i18n="dash_title">لوحة القياس الحية: نظرة الإدارة</h1>
-                <p class="text-gray-300" data-i18n="dash_subtitle">نموذج لما تراه إدارة العمليات كل صباح • تحديث مباشر لجميع الفروع</p>
+                <h1 class="text-3xl font-bold mb-2" data-i18n="dash_title">لوحة القياس الحية: إدارة العمليات</h1>
+                <p class="text-gray-300" data-i18n="dash_subtitle">تحديث مباشر لأداء جميع الفروع التشغيلية</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -116,7 +117,7 @@
 
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h3 class="font-bold text-lg" data-i18n="heatmap_heading">خريطة الفروع: كل مربع يمثل فرعاً (انقر لعرض البطاقة)</h3>
+                    <h3 class="font-bold text-lg" data-i18n="heatmap_heading">خريطة الفروع: انقر على أي فرع لعرض تفاصيل البطاقة</h3>
                 </div>
                 <div class="grid grid-cols-8 md:grid-cols-10 gap-2" id="heatmap-container">
                     <div class="col-span-10 text-center py-10 font-bold text-gray-500" data-i18n="no_data_msg">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>
@@ -124,7 +125,13 @@
             </div>
         </div>
 
-        <!-- VIEW 2: BRANCH PERFORMANCE CARD (Branch Supervisor View) -->
+        <!-- VIEW 2: ALL CARDS -->
+        <div id="view-all-cards" class="hidden">
+            <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="all_cards_title">قائمة بطاقات جميع الفروع</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="all-branches-grid"></div>
+        </div>
+
+        <!-- VIEW 3: SINGLE BRANCH CARD -->
         <div id="view-branch" class="hidden">
             <button onclick="switchView('master')" id="btn-back-master" class="mb-4 text-blink-orange font-bold flex items-center gap-2 no-print">
                 <span>◀</span> <span data-i18n="back_map">العودة للخريطة</span>
@@ -132,7 +139,6 @@
             
             <div class="mb-6">
                 <h1 class="text-3xl font-bold text-charcoal" data-i18n="branch_card_title">بطاقة أداء الفرع</h1>
-                <p class="text-gray-500 text-sm" data-i18n="branch_card_desc">نموذج لما يستلمه مشرف كل فرع شهريًا</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -155,62 +161,61 @@
                             <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
                                 <div class="bg-blink-orange h-full rounded-full transition-all duration-1000" id="bar-speed" style="width: 0%"></div>
                             </div>
-                            <div class="w-32 font-bold text-right text-gray-700" data-i18n="axis_speed">سرعة الخدمة</div>
+                            <div class="w-32 font-bold text-end text-gray-700" data-i18n="axis_speed">سرعة الخدمة</div>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="w-10 font-bold text-lg" id="card-accuracy">0</div>
                             <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
                                 <div class="bg-green-600 h-full rounded-full transition-all duration-1000" id="bar-accuracy" style="width: 0%"></div>
                             </div>
-                            <div class="w-32 font-bold text-right text-gray-700" data-i18n="axis_accuracy">دقة الطلب</div>
+                            <div class="w-32 font-bold text-end text-gray-700" data-i18n="axis_accuracy">دقة الطلب</div>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="w-10 font-bold text-lg" id="card-quality">0</div>
                             <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
                                 <div class="bg-blink-orange h-full rounded-full transition-all duration-1000" id="bar-quality" style="width: 0%"></div>
                             </div>
-                            <div class="w-32 font-bold text-right text-gray-700" data-i18n="axis_quality">جودة المنتج</div>
+                            <div class="w-32 font-bold text-end text-gray-700" data-i18n="axis_quality">جودة المنتج</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW 3: EXECUTIVE REPORT -->
+        <!-- VIEW 4: REPORT -->
         <div id="view-report" class="hidden">
             <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="report_title">التقرير التنفيذي الشهري</h1>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">51</div><div class="text-gray-600" data-i18n="lowest_branch">أدنى فرع</div></div>
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">94</div><div class="text-gray-600" data-i18n="highest_branch">أعلى فرع</div></div>
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">88</div><div class="text-gray-600" data-i18n="above_avg">فرع فوق المتوسط</div></div>
-                <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">77</div><div class="text-gray-600" data-i18n="city_avg">متوسط الرياض</div></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-2 border-blink-orange"><div class="text-blink-orange text-4xl font-bold">77</div><div class="text-gray-600" data-i18n="city_avg">متوسط العام</div></div>
             </div>
         </div>
 
-        <!-- VIEW 4: SETTINGS -->
+        <!-- VIEW 5: SETTINGS -->
         <div id="view-settings" class="hidden">
             <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="settings_title">إعدادات النظام والربط</h1>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blink-orange">
                     <h3 class="font-bold text-lg mb-4" data-i18n="create_user_heading">إنشاء مستخدم جديد</h3>
                     <form onsubmit="handleCreateUser(event)" class="space-y-4">
-                        <div>
+                        <div class="text-start">
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="username">اسم المستخدم</label>
                             <input type="text" id="new-user" required class="w-full p-2 border rounded bg-gray-50">
                         </div>
-                        <div>
+                        <div class="text-start">
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="password">كلمة المرور</label>
                             <input type="password" id="new-pass" required class="w-full p-2 border rounded bg-gray-50">
                         </div>
-                        <div>
+                        <div class="text-start">
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="role_label">الصلاحية (Role)</label>
                             <select id="new-role" class="w-full p-2 border rounded bg-gray-50">
                                 <option value="admin" data-i18n="role_admin">إدارة العمليات (Executive)</option>
                                 <option value="branch" data-i18n="role_branch">مشرف فرع (Branch Supervisor)</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="text-start">
                             <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="branch_id_label">رقم الفرع (مطلوب لمشرف الفرع فقط)</label>
                             <input type="text" id="new-branch-id" placeholder="107" class="w-full p-2 border rounded bg-gray-50">
                         </div>
@@ -218,7 +223,6 @@
                         <div id="user-msg" class="text-sm font-bold mt-2 text-center"></div>
                     </form>
                 </div>
-
                 <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-charcoal">
                     <h3 class="font-bold text-lg mb-4" data-i18n="webhook_heading">ربط الاستبيانات (API / Webhooks)</h3>
                     <p class="text-sm text-gray-600 mb-4 leading-relaxed" data-i18n="webhook_desc">
@@ -238,6 +242,9 @@
 
     <script>
         let currentLang = 'ar';
+        let cachedBranches = [];
+        let currentActiveBranchId = null;
+
         const translations = {
             ar: {
                 login_subtitle: "منصة تحليل الاستبيانات وإدارة الفروع",
@@ -245,19 +252,20 @@
                 password: "كلمة المرور",
                 login_btn: "تسجيل الدخول",
                 nav_master: "لوحة القياس الحية",
+                nav_all_cards: "بطاقات الفروع",
                 nav_report: "التقرير التنفيذي الشهري",
                 nav_settings: "إعدادات النظام",
                 logout: "خروج",
-                dash_title: "لوحة القياس الحية: نظرة الإدارة",
-                dash_subtitle: "نموذج لما تراه إدارة العمليات كل صباح • تحديث مباشر لجميع الفروع",
+                dash_title: "لوحة القياس الحية: إدارة العمليات",
+                dash_subtitle: "تحديث مباشر لأداء جميع الفروع التشغيلية",
                 kpi_total: "إجمالي التقييمات",
                 kpi_avg: "متوسط أداء الفروع",
                 kpi_active: "الفروع النشطة",
-                heatmap_heading: "خريطة الفروع: كل مربع يمثل فرعاً (انقر لعرض البطاقة)",
+                heatmap_heading: "خريطة الفروع: انقر على أي فرع لعرض تفاصيل البطاقة",
+                all_cards_title: "قائمة بطاقات جميع الفروع",
                 no_data_msg: "لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.",
                 back_map: "العودة للخريطة",
                 branch_card_title: "بطاقة أداء الفرع",
-                branch_card_desc: "نموذج لما يستلمه مشرف كل فرع شهريًا",
                 total_surveys_label: "إجمالي الاستبيانات",
                 waiting_data: "بانتظار البيانات",
                 score_scale: "النتيجة من 100",
@@ -269,7 +277,7 @@
                 lowest_branch: "أدنى فرع",
                 highest_branch: "أعلى فرع",
                 above_avg: "فرع فوق المتوسط",
-                city_avg: "متوسط الرياض",
+                city_avg: "متوسط العام",
                 settings_title: "إعدادات النظام والربط",
                 create_user_heading: "إنشاء مستخدم جديد",
                 role_label: "الصلاحية (Role)",
@@ -280,7 +288,10 @@
                 webhook_heading: "ربط الاستبيانات (API / Webhooks)",
                 webhook_desc: "استخدم هذا الرابط في Make.com أو Zapier لإرسال ردود الاستبيانات مباشرة إلى لوحة القياس الحية.",
                 webhook_url_label: "رابط قاعدة البيانات (POST):",
-                copy_btn: "نسخ"
+                copy_btn: "نسخ",
+                badge_excellent: "أداء ممتاز",
+                badge_review: "يحتاج متابعة",
+                badge_critical: "حالة حرجة"
             },
             en: {
                 login_subtitle: "Survey Analytics & Branch Management Platform",
@@ -288,19 +299,20 @@
                 password: "Password",
                 login_btn: "Login",
                 nav_master: "Live Dashboard",
+                nav_all_cards: "Branch Cards",
                 nav_report: "Executive Report",
                 nav_settings: "System Settings",
                 logout: "Logout",
-                dash_title: "Live Dashboard: Executive View",
-                dash_subtitle: "Operations Management View • Real-time Branch Updates",
+                dash_title: "Live Dashboard: Operations Management",
+                dash_subtitle: "Real-time performance updates for all operational branches",
                 kpi_total: "Total Surveys",
                 kpi_avg: "Average Performance",
                 kpi_active: "Active Branches",
                 heatmap_heading: "Branch Heatmap: Click any branch to view card",
+                all_cards_title: "All Branch Cards Grid",
                 no_data_msg: "No branch data available yet. Link your survey to start seeing branches here.",
                 back_map: "Back to Map",
                 branch_card_title: "Branch Performance Card",
-                branch_card_desc: "Monthly performance overview for branch supervisors",
                 total_surveys_label: "Total Surveys",
                 waiting_data: "Waiting for Data",
                 score_scale: "Score out of 100",
@@ -312,18 +324,21 @@
                 lowest_branch: "Lowest Branch",
                 highest_branch: "Highest Branch",
                 above_avg: "Branches Above Avg",
-                city_avg: "City Average",
+                city_avg: "General Average",
                 settings_title: "System Settings & Integration",
                 create_user_heading: "Create New User",
                 role_label: "Role",
-                role_admin: "Operations Management (Executive)",
+                role_admin: "Executive",
                 role_branch: "Branch Supervisor",
                 branch_id_label: "Branch ID (Required for Branch users)",
                 save_user_btn: "Save User",
                 webhook_heading: "Survey Integration (API / Webhooks)",
                 webhook_desc: "Use this endpoint in Make.com or Zapier to send survey responses directly to your live dashboard.",
                 webhook_url_label: "Database Endpoint (POST):",
-                copy_btn: "Copy"
+                copy_btn: "Copy",
+                badge_excellent: "Excellent",
+                badge_review: "Needs Review",
+                badge_critical: "Critical"
             }
         };
 
@@ -339,6 +354,19 @@
                     el.innerText = translations[currentLang][key];
                 }
             });
+
+            if (session) {
+                document.getElementById('current-user-role').innerText = session.role === 'admin' ? translations[currentLang].role_admin : translations[currentLang].role_branch;
+            }
+            if (cachedBranches.length > 0) {
+                renderAllCardsGrid(cachedBranches);
+                if (currentActiveBranchId !== null) {
+                    const found = cachedBranches.find(b => b.branch_id == currentActiveBranchId);
+                    if (found) {
+                        renderBranchCard(found.branch_id, found.overall_score, found.total_surveys, found.speed_score, found.accuracy_score, found.quality_score);
+                    }
+                }
+            }
         }
 
         let session = null;
@@ -362,7 +390,7 @@
                 if (data.success) {
                     session = data.user;
                     document.getElementById('current-user-name').innerText = session.username;
-                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? (currentLang === 'ar' ? 'إدارة العمليات (Executive)' : 'Executive') : (currentLang === 'ar' ? 'مشرف فرع (Branch)' : 'Branch Supervisor');
+                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? translations[currentLang].role_admin : translations[currentLang].role_branch;
                     
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('app-header').classList.remove('hidden');
@@ -371,6 +399,7 @@
                     if (session.role === 'admin') {
                         document.getElementById('nav-settings').classList.remove('hidden');
                         document.getElementById('nav-master').classList.remove('hidden');
+                        document.getElementById('nav-all-cards').classList.remove('hidden');
                         document.getElementById('nav-report').classList.remove('hidden');
                         document.getElementById('btn-back-master').classList.remove('hidden');
                         switchView('master');
@@ -378,6 +407,7 @@
                     } else {
                         document.getElementById('nav-settings').classList.add('hidden');
                         document.getElementById('nav-master').classList.add('hidden');
+                        document.getElementById('nav-all-cards').classList.add('hidden');
                         document.getElementById('nav-report').classList.add('hidden');
                         document.getElementById('btn-back-master').classList.add('hidden');
                         switchView('branch');
@@ -389,7 +419,7 @@
                 }
             } catch (error) {
                 err.innerText = 'Server connection error';
-                err.classList.add('hidden');
+                err.classList.remove('hidden');
             }
             btn.innerText = currentLang === 'ar' ? 'تسجيل الدخول' : 'Login';
         }
@@ -425,6 +455,8 @@
             try {
                 const res = await fetch('/api/branches');
                 let branches = await res.json();
+                cachedBranches = branches;
+
                 if(filterBranch) {
                     branches = branches.filter(b => b.branch_id == filterBranch);
                     if (branches.length === 0) {
@@ -455,6 +487,8 @@
                         btn.onclick = () => renderBranchCard(branch.branch_id, branch.overall_score, branch.total_surveys, branch.speed_score, branch.accuracy_score, branch.quality_score);
                         container.appendChild(btn);
                     });
+
+                    renderAllCardsGrid(branches);
                 } else {
                     const b = branches[0];
                     renderBranchCard(b.branch_id, b.overall_score, b.total_surveys, b.speed_score, b.accuracy_score, b.quality_score);
@@ -464,15 +498,39 @@
             }
         }
 
+        function renderAllCardsGrid(branches) {
+            const grid = document.getElementById('all-branches-grid');
+            grid.innerHTML = '';
+            branches.forEach(b => {
+                let card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl shadow-sm border-t-4 border-blink-orange cursor-pointer hover:shadow-md transition-shadow';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-lg">${currentLang === 'ar' ? 'فرع رقم' : 'Branch ID'} ${b.branch_id}</span>
+                        <span class="text-3xl font-bold text-blink-orange">${b.overall_score}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 mb-4">${translations[currentLang].total_surveys_label}: ${b.total_surveys}</div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span>${translations[currentLang].axis_speed}:</span> <span class="font-bold">${b.speed_score}</span></div>
+                        <div class="flex justify-between"><span>${translations[currentLang].axis_accuracy}:</span> <span class="font-bold">${b.accuracy_score}</span></div>
+                        <div class="flex justify-between"><span>${translations[currentLang].axis_quality}:</span> <span class="font-bold">${b.quality_score}</span></div>
+                    </div>
+                `;
+                card.onclick = () => renderBranchCard(b.branch_id, b.overall_score, b.total_surveys, b.speed_score, b.accuracy_score, b.quality_score);
+                grid.appendChild(card);
+            });
+        }
+
         function renderBranchCard(branchId, overall, total, speed, accuracy, quality) {
+            currentActiveBranchId = branchId;
             document.getElementById('card-branch-name').innerText = `${currentLang === 'ar' ? 'فرع رقم' : 'Branch ID'} ${branchId}`;
             document.getElementById('card-overall').innerText = overall || 0;
             document.getElementById('card-total').innerText = total || 0;
             
             const badge = document.getElementById('card-status-badge');
-            if (overall >= 80) { badge.className = "bg-green-100 text-green-700 py-2 px-4 rounded-full font-bold"; badge.innerText = currentLang === 'ar' ? "أداء ممتاز" : "Excellent"; }
-            else if (overall >= 60) { badge.className = "bg-yellow-100 text-yellow-700 py-2 px-4 rounded-full font-bold"; badge.innerText = currentLang === 'ar' ? "يحتاج متابعة" : "Needs Review"; }
-            else if (overall > 0) { badge.className = "bg-red-100 text-red-700 py-2 px-4 rounded-full font-bold"; badge.innerText = currentLang === 'ar' ? "حالة حرجة" : "Critical"; }
+            if (overall >= 80) { badge.className = "bg-green-100 text-green-700 py-2 px-4 rounded-full font-bold"; badge.innerText = translations[currentLang].badge_excellent; }
+            else if (overall >= 60) { badge.className = "bg-yellow-100 text-yellow-700 py-2 px-4 rounded-full font-bold"; badge.innerText = translations[currentLang].badge_review; }
+            else if (overall > 0) { badge.className = "bg-red-100 text-red-700 py-2 px-4 rounded-full font-bold"; badge.innerText = translations[currentLang].badge_critical; }
             else { badge.className = "bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold"; badge.innerText = translations[currentLang].waiting_data; }
 
             setTimeout(() => {
@@ -488,7 +546,7 @@
         }
 
         function switchView(viewName) {
-            ['master', 'branch', 'report', 'settings'].forEach(v => {
+            ['master', 'all-cards', 'branch', 'report', 'settings'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if(el) el.style.display = 'none';
                 const nav = document.getElementById(`nav-${v}`);
@@ -502,6 +560,7 @@
 
         function logout() {
             session = null;
+            currentActiveBranchId = null;
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('app-header').classList.add('hidden');
             document.getElementById('main-content').classList.add('hidden');
