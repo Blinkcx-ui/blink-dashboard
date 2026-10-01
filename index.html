@@ -185,11 +185,11 @@
                         loadRealData(session.branch_id);
                     }
                 } else {
-                    err.innerText = data.message;
+                    err.innerText = data.message || data.error || 'خطأ في الاتصال بقاعدة البيانات (Check Vercel Database Settings)';
                     err.classList.remove('hidden');
                 }
             } catch (error) {
-                err.innerText = 'حدث خطأ في الاتصال بالسيرفر';
+                err.innerText = 'حدث خطأ في الاتصال بالسيرفر (Server/Database Connection Error)';
                 err.classList.remove('hidden');
             }
             btn.innerText = 'دخول';
