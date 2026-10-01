@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,22 +23,22 @@
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="fixed inset-0 bg-charcoal z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-            <div class="text-4xl font-bold text-blink-orange mb-2 flex justify-center items-center">
-                <span class="text-gray-500 mr-2">▶</span>blink
+            <div class="mb-4 flex justify-center">
+                <img src="https://i.imgur.com/example-logo.png" alt="Blink Logo" class="h-14 object-contain" onerror="this.onerror=null; this.src='https://i.imgur.com/example-logo.png';">
             </div>
-            <p class="text-gray-500 mb-6 text-sm">تسجيل الدخول للنظام (System Login)</p>
+            <p class="text-gray-500 mb-6 text-sm" data-i18n="login_subtitle">تسجيل الدخول للنظام (System Login)</p>
             
             <form onsubmit="handleRealLogin(event)" class="space-y-4 text-right">
                 <div>
-                    <label class="block text-sm font-bold mb-1">اسم المستخدم</label>
+                    <label class="block text-sm font-bold mb-1" data-i18n="username">اسم المستخدم</label>
                     <input type="text" id="login-username" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blink-orange outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold mb-1">كلمة المرور</label>
+                    <label class="block text-sm font-bold mb-1" data-i18n="password">كلمة المرور</label>
                     <input type="password" id="login-password" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blink-orange outline-none">
                 </div>
                 <div id="login-error" class="text-red-500 text-sm hidden font-bold"></div>
-                <button type="submit" id="login-btn" class="w-full bg-blink-orange text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity mt-4">
+                <button type="submit" id="login-btn" class="w-full bg-blink-orange text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity mt-4" data-i18n="login_btn">
                     دخول
                 </button>
             </form>
@@ -48,23 +48,26 @@
     <!-- APP HEADER -->
     <header class="bg-white shadow-sm p-4 flex justify-between items-center no-print sticky top-0 z-40 hidden" id="app-header">
         <div class="flex items-center gap-6">
-            <div class="text-3xl font-bold text-blink-orange flex items-center">
-                <span class="text-gray-500 mr-2">▶</span>blink
+            <div class="flex items-center">
+                <img src="https://i.imgur.com/example-logo.png" alt="Blink Logo" class="h-10 object-contain" onerror="this.onerror=null; this.src='https://i.imgur.com/example-logo.png';">
             </div>
             <nav class="hidden md:flex gap-2 border-r pr-6" id="main-nav">
-                <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700 hidden">الرئيسية</button>
-                <button onclick="switchView('settings')" id="nav-settings" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden">إعدادات النظام</button>
+                <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700 hidden" data-i18n="nav_home">الرئيسية</button>
+                <button onclick="switchView('settings')" id="nav-settings" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden" data-i18n="nav_settings">إعدادات النظام</button>
             </nav>
         </div>
         <div class="flex items-center gap-4">
-            <button onclick="window.print()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-bold flex items-center gap-2">
+            <button onclick="toggleLanguage()" class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-200 font-bold text-sm" id="lang-toggle-btn">
+                EN
+            </button>
+            <button onclick="window.print()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-bold flex items-center gap-2 text-sm">
                 📄 PDF
             </button>
             <div class="text-left border-l pl-4">
                 <div class="font-bold text-gray-900" id="current-user-name">--</div>
                 <div class="text-xs text-gray-500" id="current-user-role">--</div>
             </div>
-            <button onclick="logout()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-bold border border-red-200">
+            <button onclick="logout()" class="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-bold border border-red-200" data-i18n="logout">
                 خروج
             </button>
         </div>
@@ -73,57 +76,58 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto p-6 hidden" id="main-content">
         
-        <!-- ========================================== -->
-        <!-- VIEW 1: MASTER DASHBOARD (ADMIN ONLY) -->
-        <!-- ========================================== -->
+        <!-- VIEW 1: MASTER DASHBOARD -->
         <div id="view-master" class="hidden">
+            <div class="bg-charcoal text-white rounded-xl p-8 mb-6 text-center">
+                <h1 class="text-3xl font-bold mb-2" data-i18n="dash_title">لوحة القياس الحية: نظرة الإدارة</h1>
+                <p class="text-gray-300" data-i18n="dash_subtitle">نظرة الإدارة • تحديث مباشر لجميع الفروع</p>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-4 border-blink-orange">
                     <div class="text-blink-orange text-4xl font-bold mb-2" id="kpi-total-surveys">0</div>
-                    <div class="text-gray-600">إجمالي التقييمات</div>
+                    <div class="text-gray-600" data-i18n="kpi_total">إجمالي التقييمات</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-4 border-blink-orange">
                     <div class="text-blink-orange text-4xl font-bold mb-2" id="kpi-avg-score">0</div>
-                    <div class="text-gray-600">متوسط أداء الفروع</div>
+                    <div class="text-gray-600" data-i18n="kpi_avg">متوسط أداء الفروع</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-4 border-blink-orange">
                     <div class="text-blink-orange text-4xl font-bold mb-2" id="kpi-active-branches">0</div>
-                    <div class="text-gray-600">الفروع النشطة</div>
+                    <div class="text-gray-600" data-i18n="kpi_active">الفروع النشطة</div>
                 </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h3 class="font-bold text-lg">خريطة أداء الفروع الحية</h3>
+                    <h3 class="font-bold text-lg" data-i18n="heatmap_heading">خريطة أداء الفروع الحية</h3>
                 </div>
                 <div class="grid grid-cols-8 md:grid-cols-10 gap-2" id="heatmap-container">
-                    <div class="col-span-10 text-center py-10 font-bold text-gray-500">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>
+                    <div class="col-span-10 text-center py-10 font-bold text-gray-500" data-i18n="no_data_msg">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>
                 </div>
             </div>
         </div>
 
-        <!-- ========================================== -->
         <!-- VIEW 2: BRANCH PERFORMANCE CARD -->
-        <!-- ========================================== -->
         <div id="view-branch" class="hidden">
             <button onclick="switchView('master')" id="btn-back-master" class="mb-4 text-blink-orange font-bold flex items-center gap-2 no-print">
-                <span>◀</span> العودة للخريطة
+                <span>◀</span> <span data-i18n="back_map">العودة للخريطة</span>
             </button>
             
-            <h1 class="text-3xl font-bold mb-6 text-charcoal">بطاقة أداء الفرع</h1>
+            <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="branch_card_title">بطاقة أداء الفرع</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-8 rounded-xl shadow-sm text-center border-t-4 border-blink-orange flex flex-col justify-center">
                     <div class="text-gray-500 mb-2 font-bold text-lg" id="card-branch-name">--</div>
                     <div class="text-8xl font-bold text-blink-orange mb-4" id="card-overall">0</div>
-                    <div class="text-gray-500 mb-6 font-bold">إجمالي الاستبيانات: <span id="card-total">0</span></div>
-                    <div id="card-status-badge" class="bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold">بانتظار البيانات</div>
+                    <div class="text-gray-500 mb-6 font-bold"><span data-i18n="total_surveys_label">إجمالي الاستبيانات</span>: <span id="card-total">0</span></div>
+                    <div id="card-status-badge" class="bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold" data-i18n="waiting_data">بانتظار البيانات</div>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm lg:col-span-2">
                     <div class="text-sm text-gray-500 mb-6 flex justify-between border-b pb-2">
-                        <span>النتيجة من 100</span>
-                        <span class="font-bold text-black">تفصيل المحاور</span>
+                        <span data-i18n="score_scale">النتيجة من 100</span>
+                        <span class="font-bold text-black" data-i18n="axes_detail">تفصيل المحاور</span>
                     </div>
 
                     <div class="space-y-6">
@@ -132,100 +136,173 @@
                             <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
                                 <div class="bg-blink-orange h-full rounded-full transition-all duration-1000" id="bar-speed" style="width: 0%"></div>
                             </div>
-                            <div class="w-32 font-bold text-right text-gray-700">سرعة الخدمة</div>
+                            <div class="w-32 font-bold text-right text-gray-700" data-i18n="axis_speed">سرعة الخدمة</div>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="w-10 font-bold text-lg" id="card-accuracy">0</div>
                             <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
                                 <div class="bg-green-600 h-full rounded-full transition-all duration-1000" id="bar-accuracy" style="width: 0%"></div>
                             </div>
-                            <div class="w-32 font-bold text-right text-gray-700">دقة الطلب</div>
+                            <div class="w-32 font-bold text-right text-gray-700" data-i18n="axis_accuracy">دقة الطلب</div>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="w-10 font-bold text-lg" id="card-quality">0</div>
                             <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
                                 <div class="bg-blink-orange h-full rounded-full transition-all duration-1000" id="bar-quality" style="width: 0%"></div>
                             </div>
-                            <div class="w-32 font-bold text-right text-gray-700">جودة المنتج</div>
+                            <div class="w-32 font-bold text-right text-gray-700" data-i18n="axis_quality">جودة المنتج</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- VIEW 3: SETTINGS / CREATE USERS & WEBHOOKS -->
-        <!-- ========================================== -->
+        <!-- VIEW 3: SETTINGS -->
         <div id="view-settings" class="hidden">
-            <h1 class="text-3xl font-bold mb-6 text-charcoal">إعدادات النظام والربط</h1>
+            <h1 class="text-3xl font-bold mb-6 text-charcoal" data-i18n="settings_title">إعدادات النظام والربط</h1>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- User Creation -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blink-orange">
-                    <h3 class="font-bold text-lg mb-4">إنشاء مستخدم جديد</h3>
+                    <h3 class="font-bold text-lg mb-4" data-i18n="create_user_heading">إنشاء مستخدم جديد</h3>
                     <form onsubmit="handleCreateUser(event)" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">اسم المستخدم</label>
+                            <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="username">اسم المستخدم</label>
                             <input type="text" id="new-user" required class="w-full p-2 border rounded bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">كلمة المرور</label>
+                            <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="password">كلمة المرور</label>
                             <input type="password" id="new-pass" required class="w-full p-2 border rounded bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">الصلاحية (Role)</label>
+                            <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="role_label">الصلاحية (Role)</label>
                             <select id="new-role" class="w-full p-2 border rounded bg-gray-50">
-                                <option value="admin">مدير نظام (Admin)</option>
-                                <option value="branch">مشرف فرع (Branch Supervisor)</option>
+                                <option value="admin" data-i18n="role_admin">مدير نظام (Admin)</option>
+                                <option value="branch" data-i18n="role_branch">مشرف فرع (Branch Supervisor)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">رقم الفرع (مطلوب لمشرف الفرع فقط)</label>
-                            <input type="text" id="new-branch-id" placeholder="مثال: 107" class="w-full p-2 border rounded bg-gray-50">
+                            <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="branch_id_label">رقم الفرع (مطلوب لمشرف الفرع فقط)</label>
+                            <input type="text" id="new-branch-id" placeholder="107" class="w-full p-2 border rounded bg-gray-50">
                         </div>
-                        <button type="submit" class="bg-blink-orange text-white w-full py-3 rounded font-bold hover:opacity-90">حفظ المستخدم</button>
+                        <button type="submit" class="bg-blink-orange text-white w-full py-3 rounded font-bold hover:opacity-90" data-i18n="save_user_btn">حفظ المستخدم</button>
                         <div id="user-msg" class="text-sm font-bold mt-2 text-center"></div>
                     </form>
                 </div>
 
-                <!-- Webhook Links -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-charcoal">
-                    <h3 class="font-bold text-lg mb-4">ربط الاستبيانات (API / Webhooks)</h3>
-                    <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-                        استخدم هذا الرابط في Make.com أو Zapier لإرسال ردود الاستبيانات (Google Forms / Typeform) مباشرة إلى لوحة القياس الحية.
+                    <h3 class="font-bold text-lg mb-4" data-i18n="webhook_heading">ربط الاستبيانات (API / Webhooks)</h3>
+                    <p class="text-sm text-gray-600 mb-4 leading-relaxed" data-i18n="webhook_desc">
+                        استخدم هذا الرابط في Make.com أو Zapier لإرسال ردود الاستبيانات مباشرة إلى لوحة القياس الحية.
                     </p>
-                    
                     <div class="mb-6">
-                        <label class="block text-xs font-bold text-gray-500 mb-1">رابط قاعدة البيانات (POST):</label>
+                        <label class="block text-xs font-bold text-gray-500 mb-1" data-i18n="webhook_url_label">رابط قاعدة البيانات (POST):</label>
                         <div class="flex items-center gap-2">
                             <input type="text" readonly value="https://blink-dashboard-one.vercel.app/api/branches" class="w-full p-2 border rounded bg-gray-100 text-left font-mono text-xs" dir="ltr" id="webhook-url">
-                            <button onclick="copyToClipboard()" class="bg-charcoal text-white px-4 py-2 rounded text-sm font-bold whitespace-nowrap">نسخ</button>
+                            <button onclick="copyToClipboard()" class="bg-charcoal text-white px-4 py-2 rounded text-sm font-bold whitespace-nowrap" data-i18n="copy_btn">نسخ</button>
                         </div>
                     </div>
-
-                    <h4 class="font-bold text-sm mb-2 text-gray-800">الحقول المطلوبة في Make.com:</h4>
-                    <ul class="text-xs text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-4 rounded-lg">
-                        <li><strong class="font-mono text-blink-orange">branch_id</strong>: رقم الفرع (نص)</li>
-                        <li><strong class="font-mono text-blink-orange">overall_score</strong>: النتيجة الإجمالية (رقم)</li>
-                        <li><strong class="font-mono text-blink-orange">speed_score</strong>: سرعة الخدمة (رقم)</li>
-                        <li><strong class="font-mono text-blink-orange">accuracy_score</strong>: دقة الطلب (رقم)</li>
-                        <li><strong class="font-mono text-blink-orange">quality_score</strong>: جودة المنتج (رقم)</li>
-                    </ul>
                 </div>
             </div>
         </div>
-
     </main>
 
     <script>
-        let session = null;
+        let currentLang = 'ar';
+        const translations = {
+            ar: {
+                login_subtitle: "تسجيل الدخول للنظام (System Login)",
+                username: "اسم المستخدم",
+                password: "كلمة المرور",
+                login_btn: "دخول",
+                nav_home: "الرئيسية",
+                nav_settings: "إعدادات النظام",
+                logout: "خروج",
+                dash_title: "لوحة القياس الحية: نظرة الإدارة",
+                dash_subtitle: "نظرة الإدارة • تحديث مباشر لجميع الفروع",
+                kpi_total: "إجمالي التقييمات",
+                kpi_avg: "متوسط أداء الفروع",
+                kpi_active: "الفروع النشطة",
+                heatmap_heading: "خريطة أداء الفروع الحية",
+                no_data_msg: "لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.",
+                back_map: "العودة للخريطة",
+                branch_card_title: "بطاقة أداء الفرع",
+                total_surveys_label: "إجمالي الاستبيانات",
+                waiting_data: "بانتظار البيانات",
+                score_scale: "النتيجة من 100",
+                axes_detail: "تفصيل المحاور",
+                axis_speed: "سرعة الخدمة",
+                axis_accuracy: "دقة الطلب",
+                axis_quality: "جودة المنتج",
+                settings_title: "إعدادات النظام والربط",
+                create_user_heading: "إنشاء مستخدم جديد",
+                role_label: "الصلاحية (Role)",
+                role_admin: "مدير نظام (Admin)",
+                role_branch: "مشرف فرع (Branch Supervisor)",
+                branch_id_label: "رقم الفرع (مطلوب لمشرف الفرع فقط)",
+                save_user_btn: "حفظ المستخدم",
+                webhook_heading: "ربط الاستبيانات (API / Webhooks)",
+                webhook_desc: "استخدم هذا الرابط في Make.com أو Zapier لإرسال ردود الاستبيانات مباشرة إلى لوحة القياس الحية.",
+                webhook_url_label: "رابط قاعدة البيانات (POST):",
+                copy_btn: "نسخ"
+            },
+            en: {
+                login_subtitle: "System Login",
+                username: "Username",
+                password: "Password",
+                login_btn: "Login",
+                nav_home: "Home",
+                nav_settings: "Settings",
+                logout: "Logout",
+                dash_title: "Live Dashboard: Executive View",
+                dash_subtitle: "Executive Overview • Real-time Branch Updates",
+                kpi_total: "Total Surveys",
+                kpi_avg: "Average Performance",
+                kpi_active: "Active Branches",
+                heatmap_heading: "Live Branch Heatmap",
+                no_data_msg: "No branch data available yet. Link your survey to start seeing branches here.",
+                back_map: "Back to Map",
+                branch_card_title: "Branch Performance Card",
+                total_surveys_label: "Total Surveys",
+                waiting_data: "Waiting for Data",
+                score_scale: "Score out of 100",
+                axes_detail: "Metric Breakdown",
+                axis_speed: "Service Speed",
+                axis_accuracy: "Order Accuracy",
+                axis_quality: "Product Quality",
+                settings_title: "System Settings & Integration",
+                create_user_heading: "Create New User",
+                role_label: "Role",
+                role_admin: "Admin",
+                role_branch: "Branch Supervisor",
+                branch_id_label: "Branch ID (Required for Branch users)",
+                save_user_btn: "Save User",
+                webhook_heading: "Survey Integration (API / Webhooks)",
+                webhook_desc: "Use this endpoint in Make.com or Zapier to send survey responses directly to your live dashboard.",
+                webhook_url_label: "Database Endpoint (POST):",
+                copy_btn: "Copy"
+            }
+        };
 
-        // REAL LOGIN LOGIC
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.getElementById('html-root').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('html-root').setAttribute('lang', currentLang);
+            document.getElementById('lang-toggle-btn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
+                }
+            });
+        }
+
+        let session = null;
         async function handleRealLogin(e) {
             e.preventDefault();
             const btn = document.getElementById('login-btn');
             const err = document.getElementById('login-error');
-            btn.innerText = 'جاري التحقق...';
+            btn.innerText = currentLang === 'ar' ? 'جاري التحقق...' : 'Verifying...';
             err.classList.add('hidden');
 
             try {
@@ -237,56 +314,44 @@
                         password: document.getElementById('login-password').value
                     })
                 });
-                
                 const data = await res.json();
                 if (data.success) {
                     session = data.user;
-                    
-                    // UI Updates
                     document.getElementById('current-user-name').innerText = session.username;
-                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? 'مدير النظام (Admin)' : 'مشرف فرع (Branch)';
+                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? (currentLang === 'ar' ? 'مدير النظام (Admin)' : 'Admin') : (currentLang === 'ar' ? 'مشرف فرع (Branch)' : 'Branch Supervisor');
                     
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('app-header').classList.remove('hidden');
                     document.getElementById('main-content').classList.remove('hidden');
                     
-                    // Strict Role Enforcement
-                    const navSettings = document.getElementById('nav-settings');
-                    const navMaster = document.getElementById('nav-master');
-                    const btnBackMaster = document.getElementById('btn-back-master');
-
                     if (session.role === 'admin') {
-                        navSettings.classList.remove('hidden');
-                        navMaster.classList.remove('hidden');
-                        btnBackMaster.classList.remove('hidden');
+                        document.getElementById('nav-settings').classList.remove('hidden');
+                        document.getElementById('nav-master').classList.remove('hidden');
+                        document.getElementById('btn-back-master').classList.remove('hidden');
                         switchView('master');
                         loadRealData();
                     } else {
-                        // Branch User Logic: Strip all admin features
-                        navSettings.classList.add('hidden');
-                        navMaster.classList.add('hidden');
-                        btnBackMaster.classList.add('hidden'); // Cannot go back to master map
-                        switchView('branch'); // Force them directly to the branch card
+                        document.getElementById('nav-settings').classList.add('hidden');
+                        document.getElementById('nav-master').classList.add('hidden');
+                        document.getElementById('btn-back-master').classList.add('hidden');
+                        switchView('branch');
                         loadRealData(session.branch_id);
                     }
                 } else {
-                    err.innerText = data.message || 'خطأ في بيانات الدخول';
+                    err.innerText = data.message || 'Invalid credentials';
                     err.classList.remove('hidden');
                 }
             } catch (error) {
-                err.innerText = 'حدث خطأ في الاتصال بالسيرفر';
+                err.innerText = 'Server connection error';
                 err.classList.remove('hidden');
             }
-            btn.innerText = 'دخول';
+            btn.innerText = currentLang === 'ar' ? 'دخول' : 'Login';
         }
 
-        // REAL USER CREATION
         async function handleCreateUser(e) {
             e.preventDefault();
             const msg = document.getElementById('user-msg');
-            msg.innerText = 'جاري الحفظ...';
-            msg.className = 'text-sm font-bold mt-2 text-gray-500 text-center';
-
+            msg.innerText = currentLang === 'ar' ? 'جاري الحفظ...' : 'Saving...';
             try {
                 const res = await fetch('/api/users', {
                     method: 'POST',
@@ -299,52 +364,39 @@
                     })
                 });
                 if(res.ok) {
-                    msg.innerText = 'تم إنشاء المستخدم بنجاح!';
+                    msg.innerText = currentLang === 'ar' ? 'تم إنشاء المستخدم بنجاح!' : 'User created successfully!';
                     msg.className = 'text-sm font-bold mt-2 text-green-600 text-center';
                     e.target.reset();
-                } else {
-                    throw new Error('فشل الحفظ');
-                }
+                } else { throw new Error(); }
             } catch(err) {
-                msg.innerText = 'حدث خطأ. قد يكون اسم المستخدم مكرراً.';
+                msg.innerText = currentLang === 'ar' ? 'حدث خطأ. تأكد من عدم تكرار اسم المستخدم.' : 'Error creating user.';
                 msg.className = 'text-sm font-bold mt-2 text-red-500 text-center';
             }
         }
 
-        // FETCH REAL SURVEY DATA
         async function loadRealData(filterBranch = null) {
             const container = document.getElementById('heatmap-container');
             try {
                 const res = await fetch('/api/branches');
                 let branches = await res.json();
-
-                // If it's a branch user, filter data immediately
                 if(filterBranch) {
                     branches = branches.filter(b => b.branch_id == filterBranch);
-                    
-                    // If a branch user logs in but they have 0 surveys in DB, render a ZERO state card for them
                     if (branches.length === 0) {
                         renderBranchCard(filterBranch, 0, 0, 0, 0, 0);
                         return;
                     }
                 }
-
-                // If Admin and absolutely no data exists
                 if (branches.length === 0 && !filterBranch) {
-                    container.innerHTML = '<div class="col-span-10 text-center py-10 font-bold text-gray-500">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>';
+                    container.innerHTML = `<div class="col-span-10 text-center py-10 font-bold text-gray-500">${translations[currentLang].no_data_msg}</div>`;
                     return;
                 }
-
                 if (!filterBranch) {
-                    // Update Admin Master KPIs
                     const totalSurveys = branches.reduce((sum, b) => sum + Number(b.total_surveys), 0);
                     const avgScore = Math.round(branches.reduce((sum, b) => sum + Number(b.overall_score), 0) / branches.length);
-                    
                     document.getElementById('kpi-total-surveys').innerText = totalSurveys;
                     document.getElementById('kpi-avg-score').innerText = avgScore;
                     document.getElementById('kpi-active-branches').innerText = branches.length;
 
-                    // Render Admin Heatmap
                     container.innerHTML = '';
                     branches.forEach(branch => {
                         let color = 'bg-green-500';
@@ -353,52 +405,35 @@
 
                         let btn = document.createElement('button');
                         btn.className = `${color} text-white font-bold py-3 rounded text-sm hover:opacity-80 flex flex-col items-center justify-center transition-all`;
-                        btn.innerHTML = `<span>فرع</span><span>${branch.branch_id}</span>`;
-                        
-                        btn.onclick = () => renderBranchCard(
-                            branch.branch_id, 
-                            branch.overall_score, 
-                            branch.total_surveys, 
-                            branch.speed_score, 
-                            branch.accuracy_score, 
-                            branch.quality_score
-                        );
+                        btn.innerHTML = `<span>${currentLang === 'ar' ? 'فرع' : 'Branch'}</span><span>${branch.branch_id}</span>`;
+                        btn.onclick = () => renderBranchCard(branch.branch_id, branch.overall_score, branch.total_surveys, branch.speed_score, branch.accuracy_score, branch.quality_score);
                         container.appendChild(btn);
                     });
                 } else {
-                    // Branch user with data: render their card automatically
                     const b = branches[0];
                     renderBranchCard(b.branch_id, b.overall_score, b.total_surveys, b.speed_score, b.accuracy_score, b.quality_score);
                 }
-
             } catch (err) {
-                if(!filterBranch) {
-                    container.innerHTML = '<div class="col-span-10 text-center py-10 text-red-500 font-bold">خطأ في الاتصال بقاعدة البيانات.</div>';
-                }
+                if(!filterBranch) container.innerHTML = '<div class="col-span-10 text-center py-10 text-red-500 font-bold">Database error</div>';
             }
         }
 
-        // Helper to render branch card visually
         function renderBranchCard(branchId, overall, total, speed, accuracy, quality) {
-            document.getElementById('card-branch-name').innerText = `فرع رقم ${branchId}`;
+            document.getElementById('card-branch-name').innerText = `${currentLang === 'ar' ? 'فرع رقم' : 'Branch ID'} ${branchId}`;
             document.getElementById('card-overall').innerText = overall || 0;
             document.getElementById('card-total').innerText = total || 0;
             
-            // Setup Badge
             const badge = document.getElementById('card-status-badge');
-            if (overall >= 80) { badge.className = "bg-green-100 text-green-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "أداء ممتاز"; }
-            else if (overall >= 60) { badge.className = "bg-yellow-100 text-yellow-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "يحتاج متابعة"; }
-            else if (overall > 0) { badge.className = "bg-red-100 text-red-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "حالة حرجة"; }
-            else { badge.className = "bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "لا توجد تقييمات"; }
+            if (overall >= 80) { badge.className = "bg-green-100 text-green-700 py-2 px-4 rounded-full font-bold"; badge.innerText = currentLang === 'ar' ? "أداء ممتاز" : "Excellent"; }
+            else if (overall >= 60) { badge.className = "bg-yellow-100 text-yellow-700 py-2 px-4 rounded-full font-bold"; badge.innerText = currentLang === 'ar' ? "يحتاج متابعة" : "Needs Review"; }
+            else if (overall > 0) { badge.className = "bg-red-100 text-red-700 py-2 px-4 rounded-full font-bold"; badge.innerText = currentLang === 'ar' ? "حالة حرجة" : "Critical"; }
+            else { badge.className = "bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold"; badge.innerText = translations[currentLang].waiting_data; }
 
-            // Animate Bars
             setTimeout(() => {
                 document.getElementById('card-speed').innerText = speed || 0;
                 document.getElementById('bar-speed').style.width = `${speed || 0}%`;
-                
                 document.getElementById('card-accuracy').innerText = accuracy || 0;
                 document.getElementById('bar-accuracy').style.width = `${accuracy || 0}%`;
-                
                 document.getElementById('card-quality').innerText = quality || 0;
                 document.getElementById('bar-quality').style.width = `${quality || 0}%`;
             }, 100);
@@ -406,7 +441,6 @@
             switchView('branch');
         }
 
-        // View Router
         function switchView(viewName) {
             ['master', 'branch', 'settings'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
@@ -414,10 +448,8 @@
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav && !nav.classList.contains('hidden')) nav.className = 'px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100';
             });
-            
             const targetView = document.getElementById(`view-${viewName}`);
             if(targetView) targetView.style.display = 'block';
-            
             const activeNav = document.getElementById(`nav-${viewName}`);
             if(activeNav && !activeNav.classList.contains('hidden')) activeNav.className = 'px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700';
         }
@@ -434,7 +466,7 @@
             const url = document.getElementById('webhook-url');
             url.select();
             document.execCommand('copy');
-            alert('تم نسخ الرابط بنجاح!');
+            alert(currentLang === 'ar' ? 'تم نسخ الرابط بنجاح!' : 'Copied successfully!');
         }
     </script>
 </body>
