@@ -23,7 +23,9 @@
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="fixed inset-0 bg-charcoal z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-            <div class="text-4xl font-bold text-blink-orange mb-2">▶blink</div>
+            <div class="text-4xl font-bold text-blink-orange mb-2 flex justify-center items-center">
+                <span class="text-gray-500 mr-2">▶</span>blink
+            </div>
             <p class="text-gray-500 mb-6 text-sm">تسجيل الدخول للنظام (System Login)</p>
             
             <form onsubmit="handleRealLogin(event)" class="space-y-4 text-right">
@@ -46,28 +48,35 @@
     <!-- APP HEADER -->
     <header class="bg-white shadow-sm p-4 flex justify-between items-center no-print sticky top-0 z-40 hidden" id="app-header">
         <div class="flex items-center gap-6">
-            <div class="text-3xl font-bold text-blink-orange">▶blink</div>
-            <nav class="hidden md:flex gap-2 border-r pr-6">
-                <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md">الرئيسية</button>
+            <div class="text-3xl font-bold text-blink-orange flex items-center">
+                <span class="text-gray-500 mr-2">▶</span>blink
+            </div>
+            <nav class="hidden md:flex gap-2 border-r pr-6" id="main-nav">
+                <button onclick="switchView('master')" id="nav-master" class="px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700 hidden">الرئيسية</button>
                 <button onclick="switchView('settings')" id="nav-settings" class="px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100 hidden">إعدادات النظام</button>
             </nav>
         </div>
         <div class="flex items-center gap-4">
-            <button onclick="window.print()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-bold">📄 PDF</button>
+            <button onclick="window.print()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-bold flex items-center gap-2">
+                📄 PDF
+            </button>
             <div class="text-left border-l pl-4">
                 <div class="font-bold text-gray-900" id="current-user-name">--</div>
                 <div class="text-xs text-gray-500" id="current-user-role">--</div>
             </div>
-            <button onclick="logout()" class="text-red-500 hover:bg-red-50 p-2 rounded-lg text-sm font-bold border border-red-200">خروج</button>
+            <button onclick="logout()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-bold border border-red-200">
+                خروج
+            </button>
         </div>
     </header>
 
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto p-6 hidden" id="main-content">
         
-        <!-- VIEW 1: MASTER DASHBOARD -->
-        <div id="view-master" class="block">
-            <!-- Dynamic KPIs: Start at 0 -->
+        <!-- ========================================== -->
+        <!-- VIEW 1: MASTER DASHBOARD (ADMIN ONLY) -->
+        <!-- ========================================== -->
+        <div id="view-master" class="hidden">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm text-center border-t-4 border-blink-orange">
                     <div class="text-blink-orange text-4xl font-bold mb-2" id="kpi-total-surveys">0</div>
@@ -83,67 +92,129 @@
                 </div>
             </div>
 
-            <!-- Real Database Heatmap -->
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h3 class="font-bold">الفروع (تظهر فقط الفروع التي بها بيانات)</h3>
+                    <h3 class="font-bold text-lg">خريطة أداء الفروع الحية</h3>
                 </div>
                 <div class="grid grid-cols-8 md:grid-cols-10 gap-2" id="heatmap-container">
-                    <div class="col-span-10 text-center py-8 text-gray-400">لا توجد بيانات للفروع حتى الآن.</div>
+                    <div class="col-span-10 text-center py-10 font-bold text-gray-500">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>
                 </div>
             </div>
         </div>
 
+        <!-- ========================================== -->
         <!-- VIEW 2: BRANCH PERFORMANCE CARD -->
+        <!-- ========================================== -->
         <div id="view-branch" class="hidden">
-            <button onclick="switchView('master')" class="mb-4 text-blink-orange font-bold flex items-center gap-2 no-print">
-                <span>◀</span> العودة
+            <button onclick="switchView('master')" id="btn-back-master" class="mb-4 text-blink-orange font-bold flex items-center gap-2 no-print">
+                <span>◀</span> العودة للخريطة
             </button>
+            
+            <h1 class="text-3xl font-bold mb-6 text-charcoal">بطاقة أداء الفرع</h1>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-8 rounded-xl shadow-sm text-center border-t-4 border-blink-orange">
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center border-t-4 border-blink-orange flex flex-col justify-center">
                     <div class="text-gray-500 mb-2 font-bold text-lg" id="card-branch-name">--</div>
                     <div class="text-8xl font-bold text-blink-orange mb-4" id="card-overall">0</div>
-                    <div class="text-gray-500 mb-6">إجمالي الاستبيانات: <span id="card-total">0</span></div>
+                    <div class="text-gray-500 mb-6 font-bold">إجمالي الاستبيانات: <span id="card-total">0</span></div>
+                    <div id="card-status-badge" class="bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold">بانتظار البيانات</div>
                 </div>
+
                 <div class="bg-white p-6 rounded-xl shadow-sm lg:col-span-2">
+                    <div class="text-sm text-gray-500 mb-6 flex justify-between border-b pb-2">
+                        <span>النتيجة من 100</span>
+                        <span class="font-bold text-black">تفصيل المحاور</span>
+                    </div>
+
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 font-bold" id="card-speed">0</div>
-                            <div class="flex-grow bg-gray-200 h-6 rounded-full"><div class="bg-blink-orange h-full rounded-full" id="bar-speed" style="width: 0%"></div></div>
-                            <div class="w-32 font-bold text-right">سرعة الخدمة</div>
+                            <div class="w-10 font-bold text-lg" id="card-speed">0</div>
+                            <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
+                                <div class="bg-blink-orange h-full rounded-full transition-all duration-1000" id="bar-speed" style="width: 0%"></div>
+                            </div>
+                            <div class="w-32 font-bold text-right text-gray-700">سرعة الخدمة</div>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="w-10 font-bold" id="card-accuracy">0</div>
-                            <div class="flex-grow bg-gray-200 h-6 rounded-full"><div class="bg-green-600 h-full rounded-full" id="bar-accuracy" style="width: 0%"></div></div>
-                            <div class="w-32 font-bold text-right">دقة الطلب</div>
+                            <div class="w-10 font-bold text-lg" id="card-accuracy">0</div>
+                            <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
+                                <div class="bg-green-600 h-full rounded-full transition-all duration-1000" id="bar-accuracy" style="width: 0%"></div>
+                            </div>
+                            <div class="w-32 font-bold text-right text-gray-700">دقة الطلب</div>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="w-10 font-bold" id="card-quality">0</div>
-                            <div class="flex-grow bg-gray-200 h-6 rounded-full"><div class="bg-blink-orange h-full rounded-full" id="bar-quality" style="width: 0%"></div></div>
-                            <div class="w-32 font-bold text-right">جودة المنتج</div>
+                            <div class="w-10 font-bold text-lg" id="card-quality">0</div>
+                            <div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden">
+                                <div class="bg-blink-orange h-full rounded-full transition-all duration-1000" id="bar-quality" style="width: 0%"></div>
+                            </div>
+                            <div class="w-32 font-bold text-right text-gray-700">جودة المنتج</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW 3: SETTINGS / CREATE USERS -->
+        <!-- ========================================== -->
+        <!-- VIEW 3: SETTINGS / CREATE USERS & WEBHOOKS -->
+        <!-- ========================================== -->
         <div id="view-settings" class="hidden">
-            <div class="bg-white p-6 rounded-xl shadow-sm max-w-md">
-                <h3 class="font-bold text-lg mb-4 text-blink-orange">إنشاء مستخدم جديد</h3>
-                <form onsubmit="handleCreateUser(event)" class="space-y-3">
-                    <input type="text" id="new-user" placeholder="اسم المستخدم" required class="w-full p-2 border rounded">
-                    <input type="password" id="new-pass" placeholder="كلمة المرور" required class="w-full p-2 border rounded">
-                    <select id="new-role" class="w-full p-2 border rounded">
-                        <option value="admin">مدير نظام (Admin)</option>
-                        <option value="branch">مشرف فرع (Branch)</option>
-                    </select>
-                    <input type="text" id="new-branch-id" placeholder="رقم الفرع (اختياري، للمشرفين فقط)" class="w-full p-2 border rounded">
-                    <button type="submit" class="bg-blink-orange text-white w-full py-2 rounded font-bold">حفظ المستخدم</button>
-                    <div id="user-msg" class="text-sm font-bold mt-2"></div>
-                </form>
+            <h1 class="text-3xl font-bold mb-6 text-charcoal">إعدادات النظام والربط</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- User Creation -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blink-orange">
+                    <h3 class="font-bold text-lg mb-4">إنشاء مستخدم جديد</h3>
+                    <form onsubmit="handleCreateUser(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">اسم المستخدم</label>
+                            <input type="text" id="new-user" required class="w-full p-2 border rounded bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">كلمة المرور</label>
+                            <input type="password" id="new-pass" required class="w-full p-2 border rounded bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">الصلاحية (Role)</label>
+                            <select id="new-role" class="w-full p-2 border rounded bg-gray-50">
+                                <option value="admin">مدير نظام (Admin)</option>
+                                <option value="branch">مشرف فرع (Branch Supervisor)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">رقم الفرع (مطلوب لمشرف الفرع فقط)</label>
+                            <input type="text" id="new-branch-id" placeholder="مثال: 107" class="w-full p-2 border rounded bg-gray-50">
+                        </div>
+                        <button type="submit" class="bg-blink-orange text-white w-full py-3 rounded font-bold hover:opacity-90">حفظ المستخدم</button>
+                        <div id="user-msg" class="text-sm font-bold mt-2 text-center"></div>
+                    </form>
+                </div>
+
+                <!-- Webhook Links -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-charcoal">
+                    <h3 class="font-bold text-lg mb-4">ربط الاستبيانات (API / Webhooks)</h3>
+                    <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                        استخدم هذا الرابط في Make.com أو Zapier لإرسال ردود الاستبيانات (Google Forms / Typeform) مباشرة إلى لوحة القياس الحية.
+                    </p>
+                    
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-gray-500 mb-1">رابط قاعدة البيانات (POST):</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" readonly value="https://blink-dashboard-one.vercel.app/api/branches" class="w-full p-2 border rounded bg-gray-100 text-left font-mono text-xs" dir="ltr" id="webhook-url">
+                            <button onclick="copyToClipboard()" class="bg-charcoal text-white px-4 py-2 rounded text-sm font-bold whitespace-nowrap">نسخ</button>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-sm mb-2 text-gray-800">الحقول المطلوبة في Make.com:</h4>
+                    <ul class="text-xs text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-4 rounded-lg">
+                        <li><strong class="font-mono text-blink-orange">branch_id</strong>: رقم الفرع (نص)</li>
+                        <li><strong class="font-mono text-blink-orange">overall_score</strong>: النتيجة الإجمالية (رقم)</li>
+                        <li><strong class="font-mono text-blink-orange">speed_score</strong>: سرعة الخدمة (رقم)</li>
+                        <li><strong class="font-mono text-blink-orange">accuracy_score</strong>: دقة الطلب (رقم)</li>
+                        <li><strong class="font-mono text-blink-orange">quality_score</strong>: جودة المنتج (رقم)</li>
+                    </ul>
+                </div>
             </div>
         </div>
+
     </main>
 
     <script>
@@ -170,26 +241,40 @@
                 const data = await res.json();
                 if (data.success) {
                     session = data.user;
+                    
+                    // UI Updates
                     document.getElementById('current-user-name').innerText = session.username;
-                    document.getElementById('current-user-role').innerText = session.role;
+                    document.getElementById('current-user-role').innerText = session.role === 'admin' ? 'مدير النظام (Admin)' : 'مشرف فرع (Branch)';
                     
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('app-header').classList.remove('hidden');
                     document.getElementById('main-content').classList.remove('hidden');
                     
-                    if(session.role === 'admin') {
-                        document.getElementById('nav-settings').classList.remove('hidden');
+                    // Strict Role Enforcement
+                    const navSettings = document.getElementById('nav-settings');
+                    const navMaster = document.getElementById('nav-master');
+                    const btnBackMaster = document.getElementById('btn-back-master');
+
+                    if (session.role === 'admin') {
+                        navSettings.classList.remove('hidden');
+                        navMaster.classList.remove('hidden');
+                        btnBackMaster.classList.remove('hidden');
+                        switchView('master');
                         loadRealData();
                     } else {
-                        // If branch supervisor, only show their branch
+                        // Branch User Logic: Strip all admin features
+                        navSettings.classList.add('hidden');
+                        navMaster.classList.add('hidden');
+                        btnBackMaster.classList.add('hidden'); // Cannot go back to master map
+                        switchView('branch'); // Force them directly to the branch card
                         loadRealData(session.branch_id);
                     }
                 } else {
-                    err.innerText = data.message || data.error || 'خطأ في الاتصال بقاعدة البيانات (Check Vercel Database Settings)';
+                    err.innerText = data.message || 'خطأ في بيانات الدخول';
                     err.classList.remove('hidden');
                 }
             } catch (error) {
-                err.innerText = 'حدث خطأ في الاتصال بالسيرفر (Server/Database Connection Error)';
+                err.innerText = 'حدث خطأ في الاتصال بالسيرفر';
                 err.classList.remove('hidden');
             }
             btn.innerText = 'دخول';
@@ -200,7 +285,7 @@
             e.preventDefault();
             const msg = document.getElementById('user-msg');
             msg.innerText = 'جاري الحفظ...';
-            msg.className = 'text-sm font-bold mt-2 text-gray-500';
+            msg.className = 'text-sm font-bold mt-2 text-gray-500 text-center';
 
             try {
                 const res = await fetch('/api/users', {
@@ -215,14 +300,14 @@
                 });
                 if(res.ok) {
                     msg.innerText = 'تم إنشاء المستخدم بنجاح!';
-                    msg.className = 'text-sm font-bold mt-2 text-green-600';
+                    msg.className = 'text-sm font-bold mt-2 text-green-600 text-center';
                     e.target.reset();
                 } else {
                     throw new Error('فشل الحفظ');
                 }
             } catch(err) {
-                msg.innerText = 'حدث خطأ. تأكد من عدم تكرار اسم المستخدم.';
-                msg.className = 'text-sm font-bold mt-2 text-red-500';
+                msg.innerText = 'حدث خطأ. قد يكون اسم المستخدم مكرراً.';
+                msg.className = 'text-sm font-bold mt-2 text-red-500 text-center';
             }
         }
 
@@ -233,70 +318,108 @@
                 const res = await fetch('/api/branches');
                 let branches = await res.json();
 
+                // If it's a branch user, filter data immediately
                 if(filterBranch) {
                     branches = branches.filter(b => b.branch_id == filterBranch);
+                    
+                    // If a branch user logs in but they have 0 surveys in DB, render a ZERO state card for them
+                    if (branches.length === 0) {
+                        renderBranchCard(filterBranch, 0, 0, 0, 0, 0);
+                        return;
+                    }
                 }
 
-                if (branches.length === 0) {
-                    container.innerHTML = '<div class="col-span-10 text-center py-8 font-bold text-gray-500">البيانات صفر. لا توجد استبيانات حالياً.</div>';
+                // If Admin and absolutely no data exists
+                if (branches.length === 0 && !filterBranch) {
+                    container.innerHTML = '<div class="col-span-10 text-center py-10 font-bold text-gray-500">لا توجد بيانات للفروع حتى الآن. قم بربط الاستبيان لتبدأ الفروع بالظهور هنا.</div>';
                     return;
                 }
 
-                // Update Real Master KPIs
-                const totalSurveys = branches.reduce((sum, b) => sum + Number(b.total_surveys), 0);
-                const avgScore = Math.round(branches.reduce((sum, b) => sum + Number(b.overall_score), 0) / branches.length);
-                
-                document.getElementById('kpi-total-surveys').innerText = totalSurveys;
-                document.getElementById('kpi-avg-score').innerText = avgScore;
-                document.getElementById('kpi-active-branches').innerText = branches.length;
-
-                // Render Dynamic Heatmap ONLY for existing branches
-                container.innerHTML = '';
-                branches.forEach(branch => {
-                    let color = 'bg-green-500';
-                    if (branch.overall_score < 60) color = 'bg-red-500';
-                    else if (branch.overall_score < 80) color = 'bg-yellow-500';
-
-                    let btn = document.createElement('button');
-                    btn.className = `${color} text-white font-bold py-3 rounded text-sm hover:opacity-80 flex flex-col items-center justify-center`;
-                    btn.innerHTML = `<span>فرع</span><span>${branch.branch_id}</span>`;
+                if (!filterBranch) {
+                    // Update Admin Master KPIs
+                    const totalSurveys = branches.reduce((sum, b) => sum + Number(b.total_surveys), 0);
+                    const avgScore = Math.round(branches.reduce((sum, b) => sum + Number(b.overall_score), 0) / branches.length);
                     
-                    btn.onclick = () => {
-                        document.getElementById('card-branch-name').innerText = `فرع رقم ${branch.branch_id}`;
-                        document.getElementById('card-total').innerText = branch.total_surveys;
-                        document.getElementById('card-overall').innerText = branch.overall_score;
-                        
-                        document.getElementById('card-speed').innerText = branch.speed_score;
-                        document.getElementById('bar-speed').style.width = `${branch.speed_score}%`;
-                        
-                        document.getElementById('card-accuracy').innerText = branch.accuracy_score;
-                        document.getElementById('bar-accuracy').style.width = `${branch.accuracy_score}%`;
-                        
-                        document.getElementById('card-quality').innerText = branch.quality_score;
-                        document.getElementById('bar-quality').style.width = `${branch.quality_score}%`;
-                        
-                        switchView('branch');
-                    };
-                    container.appendChild(btn);
-                });
+                    document.getElementById('kpi-total-surveys').innerText = totalSurveys;
+                    document.getElementById('kpi-avg-score').innerText = avgScore;
+                    document.getElementById('kpi-active-branches').innerText = branches.length;
 
-                // If branch user, jump straight to their card
-                if(filterBranch && branches.length > 0) {
-                    container.firstChild.click();
+                    // Render Admin Heatmap
+                    container.innerHTML = '';
+                    branches.forEach(branch => {
+                        let color = 'bg-green-500';
+                        if (branch.overall_score < 60) color = 'bg-red-500';
+                        else if (branch.overall_score < 80) color = 'bg-yellow-500';
+
+                        let btn = document.createElement('button');
+                        btn.className = `${color} text-white font-bold py-3 rounded text-sm hover:opacity-80 flex flex-col items-center justify-center transition-all`;
+                        btn.innerHTML = `<span>فرع</span><span>${branch.branch_id}</span>`;
+                        
+                        btn.onclick = () => renderBranchCard(
+                            branch.branch_id, 
+                            branch.overall_score, 
+                            branch.total_surveys, 
+                            branch.speed_score, 
+                            branch.accuracy_score, 
+                            branch.quality_score
+                        );
+                        container.appendChild(btn);
+                    });
+                } else {
+                    // Branch user with data: render their card automatically
+                    const b = branches[0];
+                    renderBranchCard(b.branch_id, b.overall_score, b.total_surveys, b.speed_score, b.accuracy_score, b.quality_score);
                 }
 
             } catch (err) {
-                container.innerHTML = '<div class="col-span-10 text-center py-8 text-red-500">خطأ في جلب البيانات</div>';
+                if(!filterBranch) {
+                    container.innerHTML = '<div class="col-span-10 text-center py-10 text-red-500 font-bold">خطأ في الاتصال بقاعدة البيانات.</div>';
+                }
             }
         }
 
+        // Helper to render branch card visually
+        function renderBranchCard(branchId, overall, total, speed, accuracy, quality) {
+            document.getElementById('card-branch-name').innerText = `فرع رقم ${branchId}`;
+            document.getElementById('card-overall').innerText = overall || 0;
+            document.getElementById('card-total').innerText = total || 0;
+            
+            // Setup Badge
+            const badge = document.getElementById('card-status-badge');
+            if (overall >= 80) { badge.className = "bg-green-100 text-green-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "أداء ممتاز"; }
+            else if (overall >= 60) { badge.className = "bg-yellow-100 text-yellow-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "يحتاج متابعة"; }
+            else if (overall > 0) { badge.className = "bg-red-100 text-red-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "حالة حرجة"; }
+            else { badge.className = "bg-gray-100 text-gray-700 py-2 px-4 rounded-full font-bold"; badge.innerText = "لا توجد تقييمات"; }
+
+            // Animate Bars
+            setTimeout(() => {
+                document.getElementById('card-speed').innerText = speed || 0;
+                document.getElementById('bar-speed').style.width = `${speed || 0}%`;
+                
+                document.getElementById('card-accuracy').innerText = accuracy || 0;
+                document.getElementById('bar-accuracy').style.width = `${accuracy || 0}%`;
+                
+                document.getElementById('card-quality').innerText = quality || 0;
+                document.getElementById('bar-quality').style.width = `${quality || 0}%`;
+            }, 100);
+
+            switchView('branch');
+        }
+
+        // View Router
         function switchView(viewName) {
             ['master', 'branch', 'settings'].forEach(v => {
-                document.getElementById(`view-${v}`).style.display = 'none';
-                if(document.getElementById(`nav-${v}`)) document.getElementById(`nav-${v}`).className = 'px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100';
+                const el = document.getElementById(`view-${v}`);
+                if(el) el.style.display = 'none';
+                const nav = document.getElementById(`nav-${v}`);
+                if(nav && !nav.classList.contains('hidden')) nav.className = 'px-4 py-2 text-gray-500 rounded-md hover:bg-gray-100';
             });
-            document.getElementById(`view-${viewName}`).style.display = 'block';
-            if(document.getElementById(`nav-${viewName}`)) document.getElementById(`nav-${viewName}`).className = 'px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700';
+            
+            const targetView = document.getElementById(`view-${viewName}`);
+            if(targetView) targetView.style.display = 'block';
+            
+            const activeNav = document.getElementById(`nav-${viewName}`);
+            if(activeNav && !activeNav.classList.contains('hidden')) activeNav.className = 'px-4 py-2 bg-gray-100 font-bold rounded-md text-gray-700';
         }
 
         function logout() {
@@ -304,12 +427,14 @@
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('app-header').classList.add('hidden');
             document.getElementById('main-content').classList.add('hidden');
-            
-            // Reset to 0 visually on logout
-            document.getElementById('kpi-total-surveys').innerText = '0';
-            document.getElementById('kpi-avg-score').innerText = '0';
-            document.getElementById('kpi-active-branches').innerText = '0';
-            document.getElementById('heatmap-container').innerHTML = '';
+            document.getElementById('login-password').value = '';
+        }
+
+        function copyToClipboard() {
+            const url = document.getElementById('webhook-url');
+            url.select();
+            document.execCommand('copy');
+            alert('تم نسخ الرابط بنجاح!');
         }
     </script>
 </body>
